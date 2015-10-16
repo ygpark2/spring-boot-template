@@ -8,14 +8,6 @@
         <Console name="Console" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${LOG_PATTERN}" />
         </Console>
-        <RollingFile name="File" fileName="${sys:LOG_FILE}" filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
-            <PatternLayout>
-                <Pattern>${LOG_PATTERN}</Pattern>
-            </PatternLayout>
-            <Policies>
-                <SizeBasedTriggeringPolicy size="10 MB" />
-            </Policies>
-        </RollingFile>
     </Appenders>
     <Loggers>
         <Logger name="org.apache.catalina.startup.DigesterFactory" level="error" />
@@ -32,7 +24,6 @@
         <logger name="org.thymeleaf" level="warn"/>
         <Root level="info">
             <AppenderRef ref="Console" />
-            <AppenderRef ref="File" />
         </Root>
     </Loggers>
 </Configuration>

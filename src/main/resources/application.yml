@@ -94,11 +94,11 @@ spring:
 # LOGGING
 logging:
   # path: ./logs/
-  # file: myapp.log # cannot set file, path at the same time.
+  file: myapp.log # cannot set file, path at the same time.
   level:
     org.springframework.web: DEBUG
     org.hibernate: ERROR
-  # config: log4j2.xml
+  # config: log4j2.xml.bak
 
 server:
   port: 9000
