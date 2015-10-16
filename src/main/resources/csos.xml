@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<csos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	xsi:noNamespaceSchemaLocation="csos.xsd">
+
+	<rpc port="8283" allow="10.200.231.53"/>
+
+	<engines>
+	
+		<engine id="CsosBaton" class="com.kdn.csos.engine.core.CsosProtocolParser" logging="DEBUG" cmds="1A,10,11,12,14,15,21,22,23,24,2D,29,2A,31,32,34,35,42,44,53,54,18,19,52">
+			<property csosid="1" charset="MS949" cpStatValidate="false" cpCtrlMinWaitSeconds="300" cpCtrlMaxWaitSeconds="3600" omiDataFetchHours="24" ucostPushWaitMinutes="5" />
+
+			<queue name="CSOS.BATON" url="tcp://192.168.10.9:61616">
+				<username>receiver</username>
+				<password>receiver1</password>
+			</queue>
+			
+			<event topic="CSOS">
+				<received cmd="15" ret="44" />
+				<received cmd="22" ret="59" />
+				<received cmd="2A" ret="59" />
+				<received cmd="34" ret="44" />
+				<received cmd="42" ret="44" />
+				<received cmd="53" ret="44" />
+				<received cmd="35" ret="44" />
+				<received cmd="44" ret="44" />
+				<received cmd="54" ret="44" />
+				<received cmd="52" ret="44" />
+				<sent cmd="11" ret="59" />
+				<sent cmd="12" ret="59" />
+				<sent cmd="18" ret="59" />
+				<sent cmd="19" ret="59" />
+			</event>
+		</engine>
+	
+		<!--
+		<engine version="1.0.1" id="CsosKdn" class="com.kdn.csos.engine.core.CsosProtocolParser" logging="DEBUG" cmds="10,11,12,14,15,21,22,23,24,2D,29,2A,31,32,34,35,42,44,53,54,18,19,52">
+		-->
+		<engine version="1.0.1" id="CsosKdn" class="com.kdn.csos.engine.core.CsosProtocolParser" logging="DEBUG">
+
+			<property csosid="1" charset="MS949" cpStatValidate="true" cpCtrlMinWaitSeconds="300" cpCtrlMaxWaitSeconds="3600" omiDataFetchHours="24" ucostPushWaitMinutes="5" />
+
+			<!-- 
+			 - x10SendJob : 상태 Ping 데몬
+			 - x15SendJob : 제어결과 요청 데몬
+			 - x21SendJob : 단가생성 통보 데몬
+			 - x23SendJob : 충전기 전력사용량 누락분 요청 데몬
+			 - x24SendJob : V2G 전력사용량 누락분 요청 데몬
+			 - x2DSendJob : V2G구간 전력사용량 누락분 요청 데몬
+			 - x29SendJob : 충전구간 전력사용량 누락분 요청 데몬
+			 - x34SendJob : 충전기 상태요청 데몬
+			 - x52SendJob : 대용량 배터리 상태요청 데몬
+			 - x46SendJob : B2G장치(인버터) 상태요청 데몬
+			<schedule id="x10SendJob" class="com.kdn.csos.engine.schedule.X10_SendJob" timeunit="s" interval="30" />
+			<schedule id="x15SendJob" class="com.kdn.csos.engine.schedule.X15_SendJob" timeunit="s" interval="30" />
+			<schedule id="x21SendJob" class="com.kdn.csos.engine.schedule.X21_SendJob" timeunit="m" interval="5" />
+			<schedule id="x23SendJob" class="com.kdn.csos.engine.schedule.X23_SendJob" timeunit="h" interval="1" />
+			<schedule id="x24SendJob" class="com.kdn.csos.engine.schedule.X24_SendJob" timeunit="h" interval="2" />
+			<schedule id="x2DSendJob" class="com.kdn.csos.engine.schedule.X2D_SendJob" timeunit="h" interval="6" />
+			<schedule id="x29SendJob" class="com.kdn.csos.engine.schedule.X29_SendJob" timeunit="h" interval="5" />
+			<schedule id="x34SendJob" class="com.kdn.csos.engine.schedule.X34_SendJob" timeunit="m" interval="2" />
+			<schedule id="x52SendJob" class="com.kdn.csos.engine.schedule.X52_SendJob" timeunit="m" interval="3" />
+			<schedule id="x46SendJob" class="com.kdn.csos.engine.schedule.X46_SendJob" timeunit="m" interval="3" />
+			<schedule id="x10SendJob" class="com.kdn.csos.engine.schedule.X10_SendJob" timeunit="s" interval="30" />
+			-->
+			
+
+			<queue name="CSOS.KDN" url="tcp://192.168.10.9:61616">
+				<username>receiver</username>
+				<password>receiver1</password>
+				<prefetchsize>6767</prefetchsize>
+			</queue>
+
+			<event topic="CSOS">
+				<received cmd="15" ret="44" />
+				<received cmd="22" ret="59" />
+				<received cmd="2A" ret="59" />
+				<received cmd="34" ret="44" />
+				<received cmd="42" ret="44" />
+				<received cmd="53" ret="44" />
+				<received cmd="35" ret="44" />
+				<received cmd="44" ret="44" />
+				<received cmd="54" ret="44" />
+				<received cmd="52" ret="44" />
+				<sent cmd="11" ret="59" />
+				<sent cmd="12" ret="59" />
+				<sent cmd="18" ret="59" />
+				<sent cmd="19" ret="59" />
+			</event>
+		</engine>
+    
+
+		<engine id="StocBaton" class="com.kdn.csos.engine.core.StocProtocolParser" logging="DEBUG" cmds="16,17,15,23,24,29,2D,31,32,34,42,53,35,44,54,52,27,28,25,2B">
+			<property csosid="-1" charset="MS949" cpStatValidate="false" cpCtrlMinWaitSeconds="300" cpCtrlMaxWaitSeconds="3600" omiDataFetchHours="24" ucostPushWaitMinutes="5" csosList="2,3,4,5,6" memberInfoDistTimeoutSeconds="5"/>
+
+			<queue name="STOC.BATON" url="tcp://192.168.10.9:61616">
+				<username>receiver</username>
+				<password>receiver1</password>
+			</queue>
+
+			<event topic="STOC">
+				<received cmd="15" ret="44" />
+				<received cmd="34" ret="44" />
+				<received cmd="42" ret="44" />
+				<received cmd="53" ret="44" />
+				<received cmd="35" ret="44" />
+				<received cmd="44" ret="44" />
+				<received cmd="54" ret="44" />
+				<received cmd="52" ret="44" />
+				<sent cmd="11" ret="59" />
+				<sent cmd="12" ret="59" />
+				<sent cmd="18" ret="59" />
+				<sent cmd="19" ret="59" />
+			</event>
+		</engine>		
+		
+		<engine id="CsosCs" class="com.kdn.csos.engine.core.CsosProtocolParser" logging="DEBUG" cmds="10,11,12,14,15,21,22,23,24,2D,29,2A,31,32,34,35,42,44,53,54,18,19,52,71">
+			<property csosid="5" charset="UTF-8" cpStatValidate="false" cpCtrlMinWaitSeconds="300" cpCtrlMaxWaitSeconds="3600" omiDataFetchHours="24" ucostPushWaitMinutes="5" />
+			<queue name="CSOS.CS" url="tcp://192.168.10.9:61616">
+				<username>receiver</username>
+				<password>receiver1</password>
+			</queue>
+			<event topic="CSOS">
+				<received cmd="15" ret="44" />
+				<received cmd="22" ret="59" />
+				<received cmd="2A" ret="59" />
+				<received cmd="34" ret="44" />
+				<received cmd="42" ret="44" />
+				<received cmd="53" ret="44" />
+				<received cmd="35" ret="44" />
+				<received cmd="44" ret="44" />
+				<received cmd="54" ret="44" />
+				<received cmd="52" ret="44" />
+				<sent cmd="11" ret="59" />
+				<sent cmd="12" ret="59" />
+				<sent cmd="18" ret="59" />
+				<sent cmd="19" ret="59" />
+				<sent cmd="71" ret="59" />
+			</event>
+		</engine>
+		
+	</engines>
+</csos>

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+	<xsd:element name="csos">
+		<xsd:annotation>
+			<xsd:documentation>Smart Transportation CSOS 통신 데몬 구성 모델 Main Element</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="rpc" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>RPC 연결정보</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:attribute name="port" type="xsd:integer" use="required" />
+						<xsd:attribute name="allow" type="xsd:string" use="optional" />
+						<xsd:attribute name="deny" type="xsd:string" use="optional" />
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="engines" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>통신데몬 엔진 목록</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="engine" minOccurs="1" maxOccurs="unbounded">
+								<xsd:annotation>
+									<xsd:documentation>개별 엔진</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="property" minOccurs="1" maxOccurs="1">
+											<xsd:annotation>
+												<xsd:documentation>엔진 비즈니스 로직 처리 시 사용되어 지는 속성 정의</xsd:documentation>
+											</xsd:annotation>
+											<xsd:complexType>
+												<xsd:attribute name="csosid" type="xsd:integer" use="required">
+													<xsd:annotation>
+														<xsd:documentation>CSOS System ID ('-1' 입력 시 STOC 로직으로 처리)</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="charset" type="xsd:string" use="required">
+													<xsd:annotation>
+														<xsd:documentation>한글 인코딩 Character Set - MS949</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="cpStatValidate" type="xsd:boolean" use="required">
+													<xsd:annotation>
+														<xsd:documentation>충전기 상태 수신 시 Validation 체크 여부</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="cpCtrlMinWaitSeconds" type="xsd:integer" use="required">
+													<xsd:annotation>
+														<xsd:documentation>충전기 제어 후 제어결과 요청 시 까지의 최소 대기 시간(초)</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="cpCtrlMaxWaitSeconds" type="xsd:integer" use="required">
+													<xsd:annotation>
+														<xsd:documentation>충전기 제어 후 제어결과 요청 종료 까지의 최대 시간(초)</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="omiDataFetchHours" type="xsd:integer" use="required">
+													<xsd:annotation>
+														<xsd:documentation>누락 전력량 요청 구간으로 현재 시간으로 부터 정의된 시간 전까지 처리(시간)</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="ucostPushWaitMinutes" type="xsd:integer" use="required">
+													<xsd:annotation>
+														<xsd:documentation>단가 생성 통보 후 재통보까지의 최소 대기 시간(분)</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+					                        <xsd:attribute name="csosList" type="xsd:string" use="optional">
+					                          <xsd:annotation>
+					                            <xsd:documentation>STOC일경우 처리할 CSOS ID List를 콤마로 구분 입력</xsd:documentation>
+					                          </xsd:annotation>
+					                        </xsd:attribute>
+					                        <xsd:attribute name="memberInfoDistTimeoutSeconds" type="xsd:integer" use="optional">
+					                          <xsd:annotation>
+					                            <xsd:documentation>STOC일경우 회원정보 배포 후 타임아웃 시간(초)</xsd:documentation>
+					                          </xsd:annotation>
+					                        </xsd:attribute>
+					                      </xsd:complexType>
+										</xsd:element>
+										<xsd:element name="schedule" minOccurs="0" maxOccurs="unbounded">
+											<xsd:annotation>
+												<xsd:documentation>각종 통보 처리를 위한 스케쥴러(데몬) 정의</xsd:documentation>
+											</xsd:annotation>
+											<xsd:complexType>
+												<xsd:attribute name="id" type="xsd:string" use="required">
+													<xsd:annotation>
+														<xsd:documentation>고유한 스케쥴러 ID</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="class" type="xsd:string" use="required">
+													<xsd:annotation>
+														<xsd:documentation>스케쥴러 Java Class (com.kdn.csos.engine.schedule.X10_SendJob : 상태 Ping 스케쥴러, com.kdn.csos.engine.schedule.X15_SendJob : 제어결과 요청 스케쥴러, com.kdn.csos.engine.schedule.X21_SendJob : 단가생성 통보 스케쥴러, com.kdn.csos.engine.schedule.X23_SendJob : 충전기 전력사용량 누락분 요청 스케쥴러, com.kdn.csos.engine.schedule.X24_SendJob : V2G 전력사용량 누락분 요청 스케쥴러, com.kdn.csos.engine.schedule.X2D_SendJob : V2G구간 전력사용량 누락분 요청 스케쥴러, com.kdn.csos.engine.schedule.X29_SendJob : 충전구간 전력사용량 누락분 요청 스케쥴러, com.kdn.csos.engine.schedule.X34_SendJob : 충전기 상태요청 스케쥴러, com.kdn.csos.engine.schedule.X52_SendJob : 대용량 배터리 상태요청 스케쥴러)</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="timeunit" type="type.TimeUnit" use="required">
+													<xsd:annotation>
+														<xsd:documentation>스케쥴 시간 단위(type.TimeUnit 참조)</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="interval" type="xsd:integer" use="optional">
+													<xsd:annotation>
+														<xsd:documentation>스케쥴 주기</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="hour" type="type.Hour" use="optional">
+													<xsd:annotation>
+														<xsd:documentation>매일 특정 시분 중 시간 정의(timeunit가 'd' 또는 'D'일때 minute와 함께 사용)</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="minute" type="type.Minute" use="optional">
+													<xsd:annotation>
+														<xsd:documentation>매일 특정 시분 중 분 정의(timeunit가 'd' 또는 'D'일때 hour와 함께 사용)</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="queue" minOccurs="1" maxOccurs="1">
+											<xsd:annotation>
+												<xsd:documentation>메시지를 수신할 메시지 큐 접속 정보</xsd:documentation>
+											</xsd:annotation>
+											<xsd:complexType>
+												<xsd:group ref="group.QueueChild"/>
+												<xsd:attribute name="name" type="xsd:string" use="required">
+													<xsd:annotation>
+														<xsd:documentation>메시지 큐 명칭</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="url" type="xsd:anyURI" use="required">
+													<xsd:annotation>
+														<xsd:documentation>메시지 큐 접속 URL</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+											</xsd:complexType>
+										</xsd:element>
+					                    <xsd:element name="event" minOccurs="0" maxOccurs="1">
+											<xsd:annotation>
+												<xsd:documentation>이벤트 처리관련 설정값 정의</xsd:documentation>
+											</xsd:annotation>
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="received" minOccurs="0" maxOccurs="unbounded">
+														<xsd:annotation>
+															<xsd:documentation>수신 메시지에 대한 이벤트 처리 정의</xsd:documentation>
+														</xsd:annotation>
+														<xsd:complexType>
+															<xsd:attribute name="cmd" type="type.Hex" use="required">
+																<xsd:annotation>
+																	<xsd:documentation>이벤트 적용 명령코드 정의</xsd:documentation>
+																</xsd:annotation>
+															</xsd:attribute>
+															<xsd:attribute name="ret" type="type.Hex" use="required">
+																<xsd:annotation>
+																	<xsd:documentation>이벤트 적용 RET코드 정의</xsd:documentation>
+																</xsd:annotation>
+															</xsd:attribute>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="sent" minOccurs="0" maxOccurs="unbounded">
+														<xsd:annotation>
+															<xsd:documentation>송신 메시지에 대한 이벤트 처리 정의</xsd:documentation>
+														</xsd:annotation>
+														<xsd:complexType>
+															<xsd:attribute name="cmd" type="type.Hex" use="required">
+																<xsd:annotation>
+																	<xsd:documentation>이벤트 적용 명령코드 정의</xsd:documentation>
+																</xsd:annotation>
+															</xsd:attribute>
+															<xsd:attribute name="ret" type="type.Hex" use="required">
+																<xsd:annotation>
+																	<xsd:documentation>이벤트 적용 RET코드 정의</xsd:documentation>
+																</xsd:annotation>
+															</xsd:attribute>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+												<xsd:attribute name="topic" type="xsd:string" use="required">
+													<xsd:annotation>
+														<xsd:documentation>이벤트 처리용 JMS Topic 명칭</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+									<xsd:attributeGroup ref="ag.DefaultAtt"/>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+		<xsd:unique name="unique.Protocol">
+			<xsd:annotation>
+				<xsd:documentation>프로토콜 ID Unique 제약</xsd:documentation>
+			</xsd:annotation>
+			<xsd:selector xpath="./protocols/protocol"/>
+			<xsd:field xpath="@id"/>
+		</xsd:unique>
+		<xsd:unique name="uniques.Schedule">
+			<xsd:annotation>
+				<xsd:documentation>스케쥴러 ID Unique 제약</xsd:documentation>
+			</xsd:annotation>
+			<xsd:selector xpath="./protocols/protocol/schedule"/>
+			<xsd:field xpath="@id"/>
+		</xsd:unique>
+	</xsd:element>
+	<xsd:group name="group.QueueChild">
+		<xsd:annotation>
+			<xsd:documentation>메시지 큐 세부 엘리먼트 정의</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="username" type="xsd:string" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>메시지 큐 사용자 명</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="password" type="xsd:string" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>메시지 큐 사용자 비밀번호</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="timetolive" type="xsd:long" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="transacted" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="persistent" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="prefetchsize" type="xsd:long" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="ag.DefaultAtt">
+		<xsd:annotation>
+			<xsd:documentation>엔진 속성 정의</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="id" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>Unique한 엔진 ID</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="class" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>엔진 Java Class(com.kdn.csos.engine.core.CsosProtocolParser)</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="version" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>파싱 프로토콜 버전(생략 시 프로토콜 버전체크 미실시)</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="5"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="logging" type="type.Logging" use="optional" default="ERROR">
+			<xsd:annotation>
+				<xsd:documentation>로깅 레벨</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="cmds" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>적용 명령 코드(생략 시 구현된 모든 명령코드 지원)</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:attributeGroup>
+	<xsd:simpleType name="type.TimeUnit">
+		<xsd:annotation>
+			<xsd:documentation>시간 단위 정의(일: D or d, 시: H or h, 분: M or m, 초: S or s)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="s"/>
+			<xsd:enumeration value="m"/>
+			<xsd:enumeration value="h"/>
+			<xsd:enumeration value="d"/>
+			<xsd:enumeration value="S"/>
+			<xsd:enumeration value="M"/>
+			<xsd:enumeration value="H"/>
+			<xsd:enumeration value="D"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="type.Hour">
+		<xsd:annotation>
+			<xsd:documentation>시간 타입 정의</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxInclusive value="23"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Define Minute Type -->
+	<xsd:simpleType name="type.Minute">
+		<xsd:annotation>
+			<xsd:documentation>분 타입 정의</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxInclusive value="59"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="type.Hex">
+		<xsd:annotation>
+			<xsd:documentation>헥사 타입 정의</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[A-Z0-9][A-Z0-9]"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="type.Logging">
+		<xsd:annotation>
+			<xsd:documentation>로깅 타입 정의</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="FATAL"/>
+			<xsd:enumeration value="ERROR"/>
+			<xsd:enumeration value="WARN"/>
+			<xsd:enumeration value="INFO"/>
+			<xsd:enumeration value="DEBUG"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>
